@@ -10,12 +10,7 @@ output = ""
 def stateMachine(state):
     while True:
         # call the current state, and update with the next state
-        #print (state)
         state = state()
-
-        # It should be ok to keep this pretty low since in most cases, the
-        # program will generate the same output and do very little work
-        #time.sleep(0.1)
 
 def updateState():
     # run the build process, in this case, "make"
@@ -58,18 +53,21 @@ def buildState():
 def runProgramState():
     global output
 
+    # Run the generated executable
     result = subprocess.run('./build/a.out', encoding='utf8',
             stderr=subprocess.STDOUT, stdout = subprocess.PIPE)
 
     if result.stdout != output:
+        # update output and redirect to Display State
         output = result.stdout
         return displayState
-
-    return updateState
+    else:
+        # redirect to Update State
+        return updateState
 
 # STATE: Display Output
 # always prints output
-# always redirects to updateState
+# always redirects to Update State
 def displayState():
     global output
 
